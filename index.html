@@ -45,15 +45,82 @@
       margin: 0 0 20px 0;
     }
 
+
     .close {
       background: none;
-      color: white;
+      color: black;
       border: 0;
     }
 
-    .gallery {}
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      grid-auto-rows: 100px;
+      grid-auto-flow: dense;
+    }
 
+    .item {
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1;
+      grid-template-rows: 1;
+    }
 
+    .item img {
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .item__overlay {
+      background: rgba(255, 198, 0, 0.7);
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+      position: relative;
+      display: grid;
+      align-items: center;
+      justify-content: center;
+      transition: 0.5s;
+      transform: translateY(100%);
+    }
+
+    .item__overlay button {
+      border: 2px solid white;
+      color: white;
+      text-transform: uppercase;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 5px;
+    }
+
+    .item:hover .item__overlay {
+      transform: translateY(0);
+    }
+
+    .item.v2 {
+      grid-row: span 2;
+    }
+
+    .item.v3 {
+      grid-row: span 3;
+    }
+
+    .item.v4 {
+      grid-row: span 4;
+    }
+
+    .item.h2 {
+      grid-column: span 2;
+    }
+
+    .item.h3 {
+      grid-column: span 3;
+    }
+
+    .item.h4 {
+      grid-column: span 4;
+    }
 
     .overlay {
       position: fixed;
@@ -68,9 +135,11 @@
 
     .overlay.open {
       display: grid;
+      align-items: center;
+      justify-items: center;
     }
 
-    .overlay figure {
+    .overlay-inner {
       background: white;
       width: 700px;
       padding: 20px;
@@ -107,13 +176,25 @@
       return Math.floor(Math.random() * limit) + 1;
     }
 
+    function handleClick(e) {
+      const src = e.currentTarget.querySelector('img').src;
+      overlayImage.src = src;
+      overlay.classList.add('open');
+    }
+
+    function close() {
+      overlay.classList.remove('open');
+    }
+
     // 4. Create array from 50 blank spots with Array of 2 random numbers inside EACH spot.
+    // 4.1 Add additional 1x1 fillers using concat method (just merges two arrays)
     const digits = Array.from({ length: 50 }, () => {
-      return [randomNumber(4), randomNumber(4)];
-    });
+      return [randomNumber(4), randomNumber(4)]
+    }).concat([[1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1], [1, 1]])
 
 
-    // 5. Generate Our HTML 
+
+    // // 5. Generate Our HTML 
     const html = digits.map(digit => {
       const [h, v] = digit;
       return generateHTML([h, v])
@@ -121,6 +202,14 @@
 
     // 6. Add our HTML to the DOM
     gallery.innerHTML = html;
+
+    // 7. Whait for the Click to show overlay
+    const items = document.querySelectorAll('.item');
+    items.forEach(item => {
+      item.addEventListener('click', handleClick);
+    })
+
+    overlayClose.addEventListener('click', close);
 
 
   </script>
