@@ -81,8 +81,46 @@
     }
   </style>
 
+
   <script>
 
+    // 1. Select our DOM elements
+    const gallery = document.querySelector('.gallery');
+    const overlay = document.querySelector('.overlay');
+    const overlayImage= overlay.querySelector('img');
+    const overlayClose= overlay.querySelector('.close');
+
+    // 2. Generate HTML based on passed Widths & Heights
+    function generateHTML([h, v]) {
+      return `
+        <div class="item h${h} v${v}">
+          <img src="images/${randomNumber(12)}.jpg">
+          <div class="item__overlay">
+            <button>View -></button>
+          </div>
+        </div>
+      `;
+    }
+
+    // 3. Generate a random number - smaller than the Limit value - used to generate Image File Name
+    function randomNumber(limit) {
+      return Math.floor(Math.random() * limit) + 1;
+    }
+
+    // 4. Create array from 50 blank spots with Array of 2 random numbers inside EACH spot.
+    const digits = Array.from({ length: 50 }, () => {
+      return [randomNumber(4), randomNumber(4)];
+    });
+
+
+    // 5. Generate Our HTML 
+    const html = digits.map(digit => {
+      const [h, v] = digit;
+      return generateHTML([h, v])
+    }).join('');
+
+    // 6. Add our HTML to the DOM
+    gallery.innerHTML = html;
 
 
   </script>
